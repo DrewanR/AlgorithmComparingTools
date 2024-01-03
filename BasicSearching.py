@@ -2,8 +2,8 @@ import time
 import random
 import matplotlib.pyplot as plt
 
-SIMULATIONS = 10000
-MAX_LENGTH  = 20000
+SIMULATIONS = 5000
+MAX_LENGTH  = 10000
 INTERVAL    = 1000
 
 # # # FUNCTIONS # # # # # # # # # # # # # # # # # # # # # # # #
@@ -45,9 +45,16 @@ def binary_search(value, key, i=0, j=None):
 " 3. Background processes have negligable impact on run time  "
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-tests = range(INTERVAL, MAX_LENGTH, INTERVAL)
-functions = [ (binary_search, "Binary Search"), (python_search, "Python Search")]
-results = [[],[]]
+def constructResultList(size):
+    result = []
+    for i in range(0, size):
+        result.append([])
+    return result
+
+tests = range(INTERVAL, MAX_LENGTH + 1, INTERVAL)
+functions = [(binary_search, "Binary Search"), (python_search, "Python Search")]
+results = constructResultList(len(functions))
+print(results)
 for resultIndex, function in enumerate(functions):
     for i, maxValue in enumerate(tests):
         test_data = list(range(0, maxValue))
@@ -58,10 +65,10 @@ for resultIndex, function in enumerate(functions):
         finish_time = time.perf_counter()
         results[resultIndex].append((finish_time - start_time) / SIMULATIONS)
         print(f"{f"{function[1]}({maxValue})":>25} [{"="*round((i/len(tests))*20):<20}]", end="\r")
-    print(f"{f"Linear Search({MAX_LENGTH})":>25} [{"DONE":=^20}]", end="\n")
+    print(f"{f"{function[1]}({maxValue})":>25} [{"DONE":=^20}]", end="\n")
 
-for i, v in enumerate(results):
-    plt.plot(tests, v, "x-", label=functions[i][1])
+for i, v in enumerate(functions):
+    plt.plot(tests, results[i], "x-", label=v[1])
 
 plt.legend()
 plt.show()
